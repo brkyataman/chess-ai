@@ -20,7 +20,7 @@ namespace ChessProjectTerm
     {
         public override void Rule()
         {
-            System.Console.WriteLine("I am a pawn with ID: " + this._id + "\n");
+            System.Console.WriteLine("I am a PAWN with ID: " + this._id + "\n");
             System.Console.WriteLine("My 'X': " + this._x + "\n");
             System.Console.WriteLine("My 'Y': " + this._y + "\n");
         }
@@ -30,7 +30,9 @@ namespace ChessProjectTerm
     {
         public override void Rule()
         {
-            throw new NotImplementedException();
+            System.Console.WriteLine("I am a KNIGHT with ID: " + this._id + "\n");
+            System.Console.WriteLine("My 'X': " + this._x + "\n");
+            System.Console.WriteLine("My 'Y': " + this._y + "\n");
         }
     }
 
