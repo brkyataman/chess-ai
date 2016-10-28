@@ -1,0 +1,6 @@
+c:\users\berkay\documents\visual studio 2013\Projects\ChessProjectTerm\ChessProjectTerm\bin\Debug\ChessProjectTerm.exe.config
+c:\users\berkay\documents\visual studio 2013\Projects\ChessProjectTerm\ChessProjectTerm\bin\Debug\ChessProjectTerm.exe
+c:\users\berkay\documents\visual studio 2013\Projects\ChessProjectTerm\ChessProjectTerm\bin\Debug\ChessProjectTerm.pdb
+c:\users\berkay\documents\visual studio 2013\Projects\ChessProjectTerm\ChessProjectTerm\obj\Debug\ChessProjectTerm.csprojResolveAssemblyReference.cache
+c:\users\berkay\documents\visual studio 2013\Projects\ChessProjectTerm\ChessProjectTerm\obj\Debug\ChessProjectTerm.exe
+c:\users\berkay\documents\visual studio 2013\Projects\ChessProjectTerm\ChessProjectTerm\obj\Debug\ChessProjectTerm.pdb
