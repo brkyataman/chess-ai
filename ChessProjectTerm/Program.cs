@@ -11,19 +11,17 @@ namespace ChessProjectTerm
         static void Main()
         {
             string input;
-            Board chessBoard;
+            //Board chessBoard;
             
             System.Console.WriteLine("Welcome to Ultimate Chess Hell");
             input = System.Console.ReadLine();
             System.Console.WriteLine("You wrote: " + input + "\n");
 
-            Piece _pawn = new Pawn();
-            _pawn._x = 3;
-            _pawn._y = 4;
-            _pawn._id = 11;
-            _pawn.Rule();
-
+            Board board = new Board();
             input = System.Console.ReadLine();
         }
+
+
+        
     }
 }

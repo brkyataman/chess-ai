@@ -9,9 +9,20 @@ namespace ChessProjectTerm
     public class Square
     {
 
-        private bool isOccupied{ get ; set; }
-        private string XoccupiedBy { get; set; }
-        public Piece occupiedBy;
+        public bool isOccupied{ get ; set; }
+
+        public Piece occupiedBy { get; set; }
+
+        public Square()
+        {
+            this.isOccupied = false;
+            this.occupiedBy = null;
+        }
+        public Square(bool _isOccupied, Piece _occupiedBy)
+        {
+            this.isOccupied = _isOccupied;
+            this.occupiedBy = _occupiedBy;
+        }
 
         public void NewPiece()
         {
