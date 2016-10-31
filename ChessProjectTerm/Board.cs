@@ -23,7 +23,10 @@ namespace ChessProjectTerm
             List<Move> x = new List<Move>();
             foreach (var move in board[2, 2].occupiedBy.PlayableMoves(this.board)) { 
                 x.Add(move);
+                System.Console.WriteLine(  move.from + "\n");
             }
+
+            
             this.turn = 0;
         }
         public void InitiliazeBoard()
@@ -37,7 +40,7 @@ namespace ChessProjectTerm
                     board[i, j] = new Square();
                 }
             }
-            var a = new Bishop();
+            var a = new King();
             a.x = 2; a.y = 2;
             board[2, 2].isOccupied = true;
             board[2, 2].occupiedBy = a;
