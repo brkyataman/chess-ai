@@ -23,15 +23,6 @@ namespace ChessProjectTerm
             this.isOccupied = _isOccupied;
             this.occupiedBy = _occupiedBy;
         }
-
-        public void NewPiece()
-        {
-            Piece _pawn = new Pawn();
-            occupiedBy = _pawn;
-            occupiedBy = null;
-        }
-        
-        
        
     }
 }

@@ -13,6 +13,8 @@ namespace ChessProjectTerm
     {
         private Square[,] board;
         private int turn;
+        private string whiteKingPos;
+        private string blackKingPos;
         //private List<string> playableMoves;
 
         public Board()
@@ -26,7 +28,7 @@ namespace ChessProjectTerm
                 System.Console.WriteLine(  move.from + "\n");
             }
 
-            
+            var ajk = board[3, 3].occupiedBy;
             this.turn = 0;
         }
         public void InitiliazeBoard()
@@ -40,11 +42,12 @@ namespace ChessProjectTerm
                     board[i, j] = new Square();
                 }
             }
-            var a = new King();
-            a.x = 2; a.y = 2;
+            var a = new Pawn(2,2,1,'B');
+            var b = new King(3, 3, 2, 'B');
             board[2, 2].isOccupied = true;
             board[2, 2].occupiedBy = a;
-
+            board[3, 3].isOccupied = true;
+            board[3, 3].occupiedBy = b;
             //var a = new Bishop();
             //a.x = 2; a.y = 2;
             //this.board[2, 2] = new Square(true, a);
