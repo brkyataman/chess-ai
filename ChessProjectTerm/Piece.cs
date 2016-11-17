@@ -11,14 +11,11 @@ namespace ChessProjectTerm
 
         public int x { get; set; }
         public int y { get; set; }
-        public int id { get; set; }
         public char color { get; set; }
-
-        public Piece(int _x, int _y, int _id, char _color)
+        public Piece(int _x, int _y, char _color)
         {
             this.x = _x;
             this.y = _y;
-            this.id = _id;
             this.color = _color;
         }
         abstract public IEnumerable<Move> PlayableMoves(Square[,] board);
@@ -37,7 +34,7 @@ namespace ChessProjectTerm
                         if (board[x + _i, y + _j].occupiedBy.color != this.color)
                         {
                             //TODO: Capture Enemy
-                            yield return new Move(msg, msg);
+                            yield return new Move(x, y, x + _i, y + _j, 'C');
                         }
                         //Occupied by ally piece so do nothing
                         break;
@@ -46,7 +43,7 @@ namespace ChessProjectTerm
                     {
                         //Else put to playableMoves list that new position.
                         //TODO: Move to free square
-                        yield return new Move(msg, msg);
+                        yield return new Move(x, y, x + _i, y + _j, 'M');
 
                         if (!loop)
                         {
@@ -97,13 +94,25 @@ namespace ChessProjectTerm
                     return true;
                 }
 
-                //Pawn
-                //if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k + 45)),
-                //    Convert.ToInt32(Math.Sin(360 - 45 - k)) * 2, _board, typeof(Knight), _loop: false))
-                //{
-                //    return true;
-                //}
-                //King
+                //Pawn [(-1,1),(-1,-1) if opponet is black else (1,1),(1,-1)]
+                if (IsThisPiece(king_x, king_y, k < 91.0 ? -1 : -2,
+                    Convert.ToInt32(Math.Tan(360 - k + 45)), _board, typeof(Pawn), _loop: false))
+                {
+                    return true;
+                }
+                //King-Direct
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k)),
+                    Convert.ToInt32(Math.Cos(k)), _board, typeof(King), _loop: false))
+                {
+                    return true;
+                }
+                //King-Diagonal
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan(k + 45)),
+                    Convert.ToInt32(Math.Tan(360 - 45 - k)), _board, typeof(King), _loop: false))
+                {
+                    return true;
+                }
+
             }
             return false;
         }
@@ -111,9 +120,16 @@ namespace ChessProjectTerm
         //Queen-Rook and Queen-Bishop checks same squares, so there is two types.
         private bool IsThisPiece(int king_x, int king_y, int _i, int _j, Square[,] _board, Type _type1, Type _type2 = null, bool _loop = false)
         {
-            
+
             char oppColor = 'B';
-            if (color == 'B') { oppColor = 'W'; }
+            if (color == 'B')
+            {
+                oppColor = 'W';
+                if (_type1.Equals(typeof(Pawn)))
+                {
+                    _i = _i * -1;
+                }
+            }
             int inc_i = _i;
             int inc_j = _j;
             while (isValid(king_x + _i, king_y + _j))
@@ -124,6 +140,13 @@ namespace ChessProjectTerm
                         (_board[king_x + _i, king_y + _j].occupiedBy.GetType().Equals(_type1)
                         || _board[king_x + _i, king_y + _j].occupiedBy.GetType().Equals(_type2)))
                     {
+                        //TODO: refactor..
+                        if (_type1.Equals(typeof(Pawn)) &&
+                            Math.Abs(_j) == 2 &&
+                            (king_x + _i == 1 || king_x - _i == 6))
+                        {
+                            return false;
+                        }
                         return true;
                     }
                     else
@@ -137,9 +160,6 @@ namespace ChessProjectTerm
             }
             return false;
         }
-
-
-
 
         public bool isValid(int _x, int _y)
         {
@@ -158,8 +178,8 @@ namespace ChessProjectTerm
 
         int forwardIndex;
 
-        public Pawn(int _x, int _y, int _id, char _color)
-            : base(_x, _y, _id, _color)
+        public Pawn(int _x, int _y, char _color)
+            : base(_x, _y, _color)
         {
             this.initialPos = true;
             if (this.color == 'W') { this.forwardIndex = -1; }
@@ -214,7 +234,7 @@ namespace ChessProjectTerm
                     if (!board[x + _i, y].isOccupied)
                     {
                         //TODO: Move
-                        yield return new Move("pawn-1forward", "frwrd");
+                        yield return new Move(x, y, x + _i, y, 'M');
                     }
                 }
                 else
@@ -224,7 +244,7 @@ namespace ChessProjectTerm
                         if (!board[x + _i, y].isOccupied)
                         {
                             //TODO: Move
-                            yield return new Move("pawn-2 forward", "2frwd");
+                            yield return new Move(x, y, x + _i, y, 'M');
                         }
                     }
                 }
@@ -241,7 +261,7 @@ namespace ChessProjectTerm
                     if (board[x + _i, y + 1].occupiedBy.color != this.color)
                     {
                         //TODO: CAPTURE
-                        yield return new Move(msg, msg);
+                        yield return new Move(x, y, x + _i, y + 1, 'C');
                     }
                 }
             }
@@ -254,7 +274,7 @@ namespace ChessProjectTerm
                     if (board[x + _i, y - 1].occupiedBy.color != this.color)
                     {
                         //TODO: CAPTURE
-                        yield return new Move(msg, msg);
+                        yield return new Move(x, y, x + _i, y - 1, 'C');
                     }
                 }
             }
@@ -275,8 +295,8 @@ namespace ChessProjectTerm
     public class Knight : Piece
     {
 
-        public Knight(int _x, int _y, int _id, char _color)
-            : base(_x, _y, _id, _color)
+        public Knight(int _x, int _y, char _color)
+            : base(_x, _y, _color)
         {
 
         }
@@ -322,8 +342,8 @@ namespace ChessProjectTerm
     public class Bishop : Piece
     {
 
-        public Bishop(int _x, int _y, int _id, char _color)
-            : base(_x, _y, _id, _color)
+        public Bishop(int _x, int _y, char _color)
+            : base(_x, _y, _color)
         {
 
         }
@@ -357,8 +377,8 @@ namespace ChessProjectTerm
 
     public class Rook : Piece
     {
-        public Rook(int _x, int _y, int _id, char _color)
-            : base(_x, _y, _id, _color)
+        public Rook(int _x, int _y, char _color)
+            : base(_x, _y, _color)
         {
 
         }
@@ -391,8 +411,8 @@ namespace ChessProjectTerm
 
     public class Queen : Piece
     {
-        public Queen(int _x, int _y, int _id, char _color)
-            : base(_x, _y, _id, _color)
+        public Queen(int _x, int _y, char _color)
+            : base(_x, _y, _color)
         {
 
         }
@@ -444,8 +464,8 @@ namespace ChessProjectTerm
     public class King : Piece
     {
 
-        public King(int _x, int _y, int _id, char _color)
-            : base(_x, _y, _id, _color)
+        public King(int _x, int _y, char _color)
+            : base(_x, _y, _color)
         {
 
         }
