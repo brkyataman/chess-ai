@@ -14,23 +14,35 @@ namespace ChessProjectTerm
         private Square[,] board;
         private char color;
         private int turn;
-        private string whiteKingPos;
-        private string blackKingPos;
+        private int king_black_x;
+        private int king_black_y;
+        private int king_white_x;
+        private int king_white_y;
+        private int numberOfPieces_white;
+        private int numberOfPieces_black;
         //private List<string> playableMoves;
+
+        public Square[,] getBoard()
+        {
+            return this.board;
+        }
 
         public Board()
         {
-            this.board = new Square[8,8];           
-            InitiliazeBoard(); //TODO: complete initiliazation
+            this.board = new Square[8, 8];
 
-            List<Move> x = new List<Move>();
-            foreach (var move in board[2, 2].occupiedBy.PlayableMoves(this.board)) { 
-                x.Add(move);
-                System.Console.WriteLine( move.from_x + "-" +move.from_y+"\n");
-            }
 
-            var ajk = board[3, 3].occupiedBy;
+            //List<Move> x = new List<Move>();
+            //foreach (var move in board[2, 2].occupiedBy.PlayableMoves(this.board))
+            //{
+            //    x.Add(move);
+            //    System.Console.WriteLine(move.from_x + "-" + move.from_y + "\n");
+            //}
+
+            //var ajk = board[3, 3].occupiedBy;
             this.turn = 0;
+            //TODO: color parametre olarak gelmeli!!! düzelt!!!
+            this.color = 'W';
         }
         public void InitiliazeBoard()
         {
@@ -41,38 +53,79 @@ namespace ChessProjectTerm
                     board[i, j] = new Square();
                 }
             }
-            for (int j = 0;  j< 8; j++)
+            for (int j = 0; j < 8; j++)
             {
-                this.board[1, j].occupiedBy = new Pawn(1,j,'B');
+                this.board[1, j].occupiedBy = new Pawn(1, j, 'B');
                 this.board[1, j].isOccupied = true;
-                this.board[6, j].occupiedBy = new Pawn(1, j, 'W');
+                this.board[6, j].occupiedBy = new Pawn(6, j, 'W');
                 this.board[6, j].isOccupied = true;
             }
+            char colorOfPieces = 'B';
+            for (int i = 0; i < 2; i++)
+            {
+                this.board[0 + 7 * i, 0].occupiedBy = new Rook(0 + 7 * i, 0, colorOfPieces);
+                this.board[0 + 7 * i, 0].isOccupied = true;
+                this.board[0 + 7 * i, 1].occupiedBy = new Knight(0 + 7 * i, 1, colorOfPieces);
+                this.board[0 + 7 * i, 1].isOccupied = true;
+                this.board[0 + 7 * i, 2].occupiedBy = new Bishop(0 + 7 * i, 2, colorOfPieces);
+                this.board[0 + 7 * i, 2].isOccupied = true;
+                this.board[0 + 7 * i, 3].occupiedBy = new Queen(0 + 7 * i, 3, colorOfPieces);
+                this.board[0 + 7 * i, 3].isOccupied = true;
+                this.board[0 + 7 * i, 4].occupiedBy = new King(0 + 7 * i, 4, colorOfPieces);
+                this.board[0 + 7 * i, 4].isOccupied = true;
+                this.board[0 + 7 * i, 5].occupiedBy = new Bishop(0 + 7 * i, 5, colorOfPieces);
+                this.board[0 + 7 * i, 5].isOccupied = true;
+                this.board[0 + 7 * i, 6].occupiedBy = new Knight(0 + 7 * i, 6, colorOfPieces);
+                this.board[0 + 7 * i, 6].isOccupied = true;
+                this.board[0 + 7 * i, 7].occupiedBy = new Rook(0 + 7 * i, 7, colorOfPieces);
+                this.board[0 + 7 * i, 7].isOccupied = true;
 
-            //TODO: piyon harici elemanları ekle!
-                
-            //var a = new Pawn(2,2,1,'B');
-            //var b = new King(3, 3, 2, 'B');
-            //board[2, 2].isOccupied = true;
-            //board[2, 2].occupiedBy = a;
-            //board[3, 3].isOccupied = true;
-            //board[3, 3].occupiedBy = b;
-            //var a = new Bishop();
-            //a.x = 2; a.y = 2;
-            //this.board[2, 2] = new Square(true, a);
+                colorOfPieces = 'W';
+            }
+
+            this.turn = 0;            
+            numberOfPieces_black = 16;
+            numberOfPieces_white = 16;
+            king_black_x = 0;
+            king_black_y = 4;
+            king_white_x = 7;
+            king_white_y = 4;
             
         }
         //Generates a move with given params, eg. from e2 to e3
-        public bool GenerateMove(string from, string to){
-            
+        public bool GenerateMove(string from, string to)
+        {
+
             return true;
         }
 
         //Turns playable moves of current board
         public List<Move> GetPlayableMoves()
         {
+            int numbOfPieces = numberOfPieces_black;
+            if (this.color == 'W')
+            {
+                numbOfPieces = numberOfPieces_white;
+            }
             List<Move> playableMoves = new List<Move>();
-            
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (numbOfPieces == 0)
+                    {
+                        return playableMoves;
+                    }
+                    if (board[i, j].isOccupied && board[i, j].occupiedBy.color == this.color)
+                    {
+                        foreach (var move in board[i, j].occupiedBy.PlayableMoves(board))
+                        {
+                            playableMoves.Add(move);
+                        }
+                        numbOfPieces--;
+                    }
+                }
+            }
             return playableMoves;
         }
 
@@ -91,7 +144,7 @@ namespace ChessProjectTerm
                 if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k)),
                     Convert.ToInt32(Math.Cos(k)), typeof(Queen), typeof(Rook), true))
                 {
-                    return true;    
+                    return true;
                 }
                 //Queen or Bishop [(1,-1),(-1,1),(-1,1),(1,-1)]
                 if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan(k + 45)),

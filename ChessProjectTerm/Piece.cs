@@ -20,7 +20,7 @@ namespace ChessProjectTerm
         }
         abstract public IEnumerable<Move> PlayableMoves(Square[,] board);
 
-        public IEnumerable<Move> BaseRule(int _i, int _j, Square[,] board, bool loop, string msg)
+        public IEnumerable<Move> BaseRule(int _i, int _j, Square[,] board, bool loop )
         {
             int inc_i = _i;
             int inc_j = _j;
@@ -303,35 +303,35 @@ namespace ChessProjectTerm
 
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
         {
-            foreach (var move in BaseRule(-2, +1, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(-2, +1, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(-1, +2, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(-1, +2, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(+1, +2, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(+1, +2, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(+2, +1, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(+2, +1, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(+2, -1, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(+2, -1, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(+1, -2, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(+1, -2, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(-1, -2, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(-1, -2, board, false))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(-2, -1, board, false, "sag-yukari"))
+            foreach (var move in BaseRule(-2, -1, board, false))
             {
                 yield return move;
             }
@@ -350,22 +350,22 @@ namespace ChessProjectTerm
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
         {
 
-            foreach (var move in BaseRule(+1, -1, board, true, "sol-asagi"))
+            foreach (var move in BaseRule(+1, -1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(+1, +1, board, true, "sag asagi"))
+            foreach (var move in BaseRule(+1, +1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, -1, board, true, "sol yukari"))
+            foreach (var move in BaseRule(-1, -1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, +1, board, true, "sag yukari"))
+            foreach (var move in BaseRule(-1, +1, board, true))
             {
                 yield return move;
             }
@@ -384,22 +384,22 @@ namespace ChessProjectTerm
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
         {
-            foreach (var move in BaseRule(+1, 0, board, true, "asagi"))
+            foreach (var move in BaseRule(+1, 0, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(0, -1, board, true, "sola"))
+            foreach (var move in BaseRule(0, -1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, 0, board, true, "yukarı"))
+            foreach (var move in BaseRule(-1, 0, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(0, +1, board, true, "saga"))
+            foreach (var move in BaseRule(0, +1, board, true))
             {
                 yield return move;
             }
@@ -418,42 +418,42 @@ namespace ChessProjectTerm
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
         {
-            foreach (var move in BaseRule(+1, 0, board, true, "asagi"))
+            foreach (var move in BaseRule(+1, 0, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(0, -1, board, true, "sola"))
+            foreach (var move in BaseRule(0, -1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, 0, board, true, "yukarı"))
+            foreach (var move in BaseRule(-1, 0, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(0, +1, board, true, "saga"))
+            foreach (var move in BaseRule(0, +1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(+1, -1, board, true, "sol-asagi"))
+            foreach (var move in BaseRule(+1, -1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(+1, +1, board, true, "sag asagi"))
+            foreach (var move in BaseRule(+1, +1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, -1, board, true, "sol yukari"))
+            foreach (var move in BaseRule(-1, -1, board, true))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, +1, board, true, "sag yukari"))
+            foreach (var move in BaseRule(-1, +1, board, true))
             {
                 yield return move;
             }
@@ -471,42 +471,42 @@ namespace ChessProjectTerm
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
         {
-            foreach (var move in BaseRule(+1, 0, board, false, "asagi"))
+            foreach (var move in BaseRule(+1, 0, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(0, -1, board, false, "sola"))
+            foreach (var move in BaseRule(0, -1, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, 0, board, false, "yukarı"))
+            foreach (var move in BaseRule(-1, 0, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(0, +1, board, false, "saga"))
+            foreach (var move in BaseRule(0, +1, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(+1, -1, board, false, "sol-asagi"))
+            foreach (var move in BaseRule(+1, -1, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(+1, +1, board, false, "sag asagi"))
+            foreach (var move in BaseRule(+1, +1, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, -1, board, false, "sol yukari"))
+            foreach (var move in BaseRule(-1, -1, board, false))
             {
                 yield return move;
             }
 
-            foreach (var move in BaseRule(-1, +1, board, false, "sag yukari"))
+            foreach (var move in BaseRule(-1, +1, board, false))
             {
                 yield return move;
             }
