@@ -20,6 +20,7 @@ namespace ChessProjectTerm
         private int king_white_y;
         private int numberOfPieces_white;
         private int numberOfPieces_black;
+        public double toRadian;
         //private List<string> playableMoves;
 
         public Square[,] getBoard()
@@ -30,7 +31,7 @@ namespace ChessProjectTerm
         public State()
         {
             this.board = new Square[8, 8];
-
+            toRadian = (Math.PI / 180);
 
             //List<Move> x = new List<Move>();
             //foreach (var move in board[2, 2].occupiedBy.PlayableMoves(this.board))
@@ -161,47 +162,47 @@ namespace ChessProjectTerm
             for (double k = 0.0; k < 360; k += 90.0)
             {
                 //Queen or Rook [(1,0),(0,1),(-1,0),(0,-1)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k)),
-                    Convert.ToInt32(Math.Cos(k)), typeof(Queen), typeof(Rook), true))
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k * toRadian)),
+                    Convert.ToInt32(Math.Cos(k * toRadian)), typeof(Queen), typeof(Rook), true))
                 {
                     return true;
                 }
                 //Queen or Bishop [(1,-1),(-1,1),(-1,1),(1,-1)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan(k + 45)),
-                    Convert.ToInt32(Math.Tan(360 - 45 - k)), typeof(Queen), typeof(Bishop), true))
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)),
+                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)), typeof(Queen), typeof(Bishop), true))
                 {
                     return true;
                 }
 
                 //Knight [(2,-1),(-2,1),(-2,1),(2,-1)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan(k + 45)) * 2,
-                    Convert.ToInt32(Math.Tan(360 - 45 - k)), typeof(Knight), _loop: false))
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)) * 2,
+                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)), typeof(Knight), _loop: false))
                 {
                     return true;
                 }
 
                 //Knight [(1,-2),(-1,2),(-1,2),(1,-2)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan(k + 45)),
-                    Convert.ToInt32(Math.Tan(360 - 45 - k)) * 2, typeof(Knight), _loop: false))
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)),
+                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)) * 2, typeof(Knight), _loop: false))
                 {
                     return true;
                 }
 
                 //Pawn [(-1,1),(-1,-1) if opponent is white else (1,1),(1,-1)]
                 if (IsThisPiece(king_x, king_y, k < 91.0 ? -1 : -2,
-                    Convert.ToInt32(Math.Tan(360 - k + 45)), typeof(Pawn), _loop: false))
+                    Convert.ToInt32(Math.Tan((360 - k + 45) * toRadian)), typeof(Pawn), _loop: false))
                 {
                     return true;
                 }
                 //King-Direct
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k)),
-                    Convert.ToInt32(Math.Cos(k)), typeof(King), _loop: false))
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k * toRadian)),
+                    Convert.ToInt32(Math.Cos(k * toRadian)), typeof(King), _loop: false))
                 {
                     return true;
                 }
                 //King-Diagonal
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan(k + 45)),
-                    Convert.ToInt32(Math.Tan(360 - 45 - k)), typeof(King), _loop: false))
+                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)),
+                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)), typeof(King), _loop: false))
                 {
                     return true;
                 }
@@ -238,6 +239,7 @@ namespace ChessProjectTerm
                         {
                             return false;
                         }
+                        System.Console.WriteLine("King is check by a " + (board[king_x + _i, king_y + _j].occupiedBy.GetType().ToString()));
                         return true;
                     }
                     else

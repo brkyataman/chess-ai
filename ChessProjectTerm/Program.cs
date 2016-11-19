@@ -41,6 +41,10 @@ namespace ChessProjectTerm
                 string to_y = System.Console.ReadLine();
 
                 state.GenerateMove((int)from_x[0]-48, (int)from_y[0]-48, (int)to_x[0]-48, (int)to_y[0]-48);
+                if (!state.IsKingChecked(0, 4))
+                {
+                    System.Console.WriteLine("No check!");
+                }
 
             }
             input = System.Console.ReadLine();
