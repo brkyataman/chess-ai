@@ -12,11 +12,14 @@ namespace ChessProjectTerm
         public int x { get; set; }
         public int y { get; set; }
         public char color { get; set; }
+
+        public bool initialPos { get;set;}
         public Piece(int _x, int _y, char _color)
         {
             this.x = _x;
             this.y = _y;
             this.color = _color;
+            this.initialPos = true;
         }
         abstract public IEnumerable<Move> PlayableMoves(Square[,] board);
 
@@ -174,15 +177,12 @@ namespace ChessProjectTerm
     public class Pawn : Piece
     {
 
-        bool initialPos;
-
         int forwardIndex;
 
         public Pawn(int _x, int _y, char _color)
             : base(_x, _y, _color)
         {
-            this.initialPos = true;
-            if (this.color == 'W') { this.forwardIndex = -1; }
+            if (this.color == 'B') { this.forwardIndex = -1; }
             else { this.forwardIndex = 1; }
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
@@ -197,16 +197,16 @@ namespace ChessProjectTerm
 
             //Promotion
 
-            foreach (var move in BaseRule(forwardIndex, board, "piyon- 1 ileri"))
+            foreach (var move in BaseRule(forwardIndex, board))
             {
                 yield return move;
             }
-            foreach (var move in BaseRule(forwardIndex * 2, board, "piyon- 2 ileri"))
+            foreach (var move in BaseRule(forwardIndex * 2, board))
             {
                 yield return move;
             }
 
-            foreach (var move in PawnCapture(forwardIndex, board, "piyon_deneme"))
+            foreach (var move in PawnCapture(forwardIndex, board))
             {
                 yield return move;
             }
@@ -224,7 +224,7 @@ namespace ChessProjectTerm
 
         }
 
-        public IEnumerable<Move> BaseRule(int _i, Square[,] board, string msg)
+        public IEnumerable<Move> BaseRule(int _i, Square[,] board)
         {
             if (isValid(x + _i, y))
             {
@@ -239,7 +239,7 @@ namespace ChessProjectTerm
                 }
                 else
                 {
-                    if (!board[x + (_i / 2), y].isOccupied)
+                    if (this.initialPos && !board[x + (_i / 2), y].isOccupied)
                     {
                         if (!board[x + _i, y].isOccupied)
                         {
@@ -251,7 +251,7 @@ namespace ChessProjectTerm
             }
         }
 
-        public IEnumerable<Move> PawnCapture(int _i, Square[,] board, string msg)
+        public IEnumerable<Move> PawnCapture(int _i, Square[,] board)
         {
             //Right diagonal
             if (isValid(x + _i, y + 1))
@@ -463,11 +463,13 @@ namespace ChessProjectTerm
 
     public class King : Piece
     {
-
+        private bool noRightCastling;
+        private bool noLeftCastling;
         public King(int _x, int _y, char _color)
             : base(_x, _y, _color)
         {
-
+            noLeftCastling = false;
+            noRightCastling = false;
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
         {
@@ -510,11 +512,51 @@ namespace ChessProjectTerm
             {
                 yield return move;
             }
+
+            if (!noRightCastling)
+            {
+                foreach (var move in Castling(+1, board))
+                {
+                    yield return move;
+                }
+            }
+
+            if (!noLeftCastling)
+            {
+                foreach (var move in Castling(-1, board))
+                {
+                    yield return move;
+                }
+            }
+
         }
 
-        public IEnumerable<Move> Castling()
+        public IEnumerable<Move> Castling(int _j, Square[,] board)
         {
-            return null;
+ 
+            if (this.initialPos && board[x, (int)((double)y - 0.5 + 3.5 *_j)].occupiedBy.initialPos)
+            {
+                if (!board[this.x, this.y + _j].isOccupied) {
+                    if (!board[this.x, this.y + _j * 2].isOccupied)
+                    {
+                        if (_j == 1)
+                        {
+                            //TODO: right castling!!!
+                            yield return new Move(x, y, x, y + _j * 2, 'R');
+                        }
+                        else if (!board[this.x, this.y + _j *3].isOccupied)
+                        {
+                            //TODO: left castling
+                            yield return new Move(x, y, x, y + _j * 2, 'R');
+                        }
+                    }
+                }
+            }
+            else {
+                if (_j == 1){ noRightCastling = true; }
+                else { noLeftCastling = true; }
+            }
+            
         }
 
     }

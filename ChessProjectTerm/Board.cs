@@ -9,7 +9,7 @@ namespace ChessProjectTerm
     /*
      Holds state of game with board and turn data.
      */
-    public class Board
+    public class State
     {
         private Square[,] board;
         private char color;
@@ -27,7 +27,7 @@ namespace ChessProjectTerm
             return this.board;
         }
 
-        public Board()
+        public State()
         {
             this.board = new Square[8, 8];
 
@@ -55,12 +55,12 @@ namespace ChessProjectTerm
             }
             for (int j = 0; j < 8; j++)
             {
-                this.board[1, j].occupiedBy = new Pawn(1, j, 'B');
+                this.board[1, j].occupiedBy = new Pawn(1, j, 'W');
                 this.board[1, j].isOccupied = true;
-                this.board[6, j].occupiedBy = new Pawn(6, j, 'W');
+                this.board[6, j].occupiedBy = new Pawn(6, j, 'B');
                 this.board[6, j].isOccupied = true;
             }
-            char colorOfPieces = 'B';
+            char colorOfPieces = 'W';
             for (int i = 0; i < 2; i++)
             {
                 this.board[0 + 7 * i, 0].occupiedBy = new Rook(0 + 7 * i, 0, colorOfPieces);
@@ -80,35 +80,53 @@ namespace ChessProjectTerm
                 this.board[0 + 7 * i, 7].occupiedBy = new Rook(0 + 7 * i, 7, colorOfPieces);
                 this.board[0 + 7 * i, 7].isOccupied = true;
 
-                colorOfPieces = 'W';
+                colorOfPieces = 'B';
             }
 
-            this.turn = 0;            
+            this.turn = 0;
             numberOfPieces_black = 16;
             numberOfPieces_white = 16;
-            king_black_x = 0;
+            king_black_x = 7;
             king_black_y = 4;
-            king_white_x = 7;
+            king_white_x = 0;
             king_white_y = 4;
-            
+
+
+
         }
         //Generates a move with given params, eg. from e2 to e3
-        public bool GenerateMove(string from, string to)
+        public bool GenerateMove(int from_x, int from_y, int to_x, int to_y)
         {
 
+            board[to_x, to_y].occupiedBy = board[from_x, from_y].occupiedBy;
+            board[to_x, to_y].occupiedBy.x = to_x;
+            board[to_x, to_y].occupiedBy.y = to_y;
+            board[to_x, to_y].occupiedBy.initialPos = false;
+            board[from_x, from_y].occupiedBy = null;
+            board[from_x, from_y].isOccupied = false;
+            board[to_x, to_y].isOccupied = true;
             return true;
         }
 
         //Turns playable moves of current board
         public List<Move> GetPlayableMoves()
         {
+
+            int k = 1;
             int numbOfPieces = numberOfPieces_black;
             if (this.color == 'W')
             {
+                k = 0;
                 numbOfPieces = numberOfPieces_white;
             }
+            
+
+            //If color is White then it will start searching for 'x' from 0 to 7
+            //If Black then start searching for 'x' from 7 to 0 
+            int i = 0;
+            i = i + 7 * k;
             List<Move> playableMoves = new List<Move>();
-            for (int i = 0; i < 8; i++)
+            while (true) 
             {
                 for (int j = 0; j < 8; j++)
                 {
@@ -125,6 +143,8 @@ namespace ChessProjectTerm
                         numbOfPieces--;
                     }
                 }
+                i = i + (1 - 2 * k);
+                if (i == -1 || i == 8) { break; }
             }
             return playableMoves;
         }
@@ -167,7 +187,7 @@ namespace ChessProjectTerm
                     return true;
                 }
 
-                //Pawn [(-1,1),(-1,-1) if opponet is black else (1,1),(1,-1)]
+                //Pawn [(-1,1),(-1,-1) if opponent is white else (1,1),(1,-1)]
                 if (IsThisPiece(king_x, king_y, k < 91.0 ? -1 : -2,
                     Convert.ToInt32(Math.Tan(360 - k + 45)), typeof(Pawn), _loop: false))
                 {
@@ -194,10 +214,8 @@ namespace ChessProjectTerm
         private bool IsThisPiece(int king_x, int king_y, int _i, int _j, Type _type1, Type _type2 = null, bool _loop = false)
         {
 
-            char oppColor = 'B';
-            if (color == 'B')
+            if (color == 'W')
             {
-                oppColor = 'W';
                 if (_type1.Equals(typeof(Pawn)))
                 {
                     _i = _i * -1;
@@ -215,8 +233,8 @@ namespace ChessProjectTerm
                     {
                         //TODO: refactor..
                         if (_type1.Equals(typeof(Pawn)) &&
-                            Math.Abs(_j) == 2 &&
-                            (king_x + _i == 1 || king_x - _i == 6))
+                            Math.Abs(_i) == 2 &&
+                            !((Pawn)board[king_x + _i, king_y + _j].occupiedBy).initialPos)
                         {
                             return false;
                         }
