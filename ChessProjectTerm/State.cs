@@ -21,6 +21,7 @@ namespace ChessProjectTerm
         private int numberOfPieces_white;
         private int numberOfPieces_black;
         public double toRadian;
+        public double divideSin;
         //private List<string> playableMoves;
 
         public Square[,] getBoard()
@@ -32,16 +33,8 @@ namespace ChessProjectTerm
         {
             this.board = new Square[8, 8];
             toRadian = (Math.PI / 180);
-
-            //List<Move> x = new List<Move>();
-            //foreach (var move in board[2, 2].occupiedBy.PlayableMoves(this.board))
-            //{
-            //    x.Add(move);
-            //    System.Console.WriteLine(move.from_x + "-" + move.from_y + "\n");
-            //}
-
-            //var ajk = board[3, 3].occupiedBy;
             this.turn = 0;
+
             //TODO: color parametre olarak gelmeli!!! düzelt!!!
             this.color = 'W';
         }
@@ -56,8 +49,8 @@ namespace ChessProjectTerm
             }
             for (int j = 0; j < 8; j++)
             {
-                this.board[1, j].occupiedBy = new Pawn(1, j, 'W');
-                this.board[1, j].isOccupied = true;
+                //this.board[1, j].occupiedBy = new Pawn(1, j, 'W');
+                //this.board[1, j].isOccupied = true;
                 this.board[6, j].occupiedBy = new Pawn(6, j, 'B');
                 this.board[6, j].isOccupied = true;
             }
@@ -109,6 +102,59 @@ namespace ChessProjectTerm
             return true;
         }
 
+        public bool GenerateMove(Move move)
+        {
+            board[move.to_x, move.to_y].occupiedBy = board[move.from_x, move.from_y].occupiedBy;
+            board[move.to_x,move.to_y].occupiedBy.UpdateData(move.to_x, move.to_y);
+            board[move.to_x, move.to_y].isOccupied = true;
+
+            board[move.from_x, move.from_y].occupiedBy = null;
+            board[move.from_x, move.from_y].isOccupied = false;
+
+            if (move.msg == 'R')
+            {
+
+                if (move.to_y > 0) //Right castling
+                {
+                    board[move.to_x, move.to_y - 1].occupiedBy = board[move.to_x, move.to_y + 1].occupiedBy;
+                    board[move.to_x, move.to_y - 1].occupiedBy.UpdateData(move.to_x, move.to_y -1);
+                    board[move.to_x, move.to_y - 1].isOccupied = true;
+                    
+                    board[move.to_x, move.to_y + 1].occupiedBy = null;
+                    board[move.to_x, move.to_y + 1].isOccupied = false;
+                }
+                else //Left castling
+                {
+                    board[move.to_x, move.to_y + 1].occupiedBy = board[move.to_x, move.to_y - 2].occupiedBy;
+                    board[move.to_x, move.to_y + 1].occupiedBy.UpdateData(move.to_x, move.to_y + 1);
+                    board[move.to_x, move.to_y + 1].isOccupied = true;
+
+                    board[move.to_x, move.to_y - 2].occupiedBy = null;
+                    board[move.to_x, move.to_y - 2].isOccupied = false;
+                }
+            }
+
+            if (move.msg == 'C')
+            {
+                //TODO: burayı sil debug için burası
+                System.Console.WriteLine("THIS IS A CAPTUE!");
+            }
+
+            if (board[move.to_x, move.to_y].occupiedBy.GetType().Equals(typeof(King)))
+            {
+                if (this.color == 'W')
+                {
+                    king_white_x = move.to_x;
+                    king_white_y = move.to_y;
+                }
+                else
+                {
+                    king_black_x = move.to_x;
+                    king_black_y = move.to_y;
+                }
+            }
+            return true;
+        }
         //Turns playable moves of current board
         public List<Move> GetPlayableMoves()
         {
@@ -120,14 +166,14 @@ namespace ChessProjectTerm
                 k = 0;
                 numbOfPieces = numberOfPieces_white;
             }
-            
+
 
             //If color is White then it will start searching for 'x' from 0 to 7
             //If Black then start searching for 'x' from 7 to 0 
             int i = 0;
             i = i + 7 * k;
             List<Move> playableMoves = new List<Move>();
-            while (true) 
+            while (true)
             {
                 for (int j = 0; j < 8; j++)
                 {
@@ -167,23 +213,23 @@ namespace ChessProjectTerm
                 {
                     return true;
                 }
-                //Queen or Bishop [(1,-1),(-1,1),(-1,1),(1,-1)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)),
-                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)), typeof(Queen), typeof(Bishop), true))
+                //Queen or Bishop [(1,1),(1,-1),(-1,1),(-1,-1)]
+                if (IsThisPiece(king_x, king_y, (k < 91.0 ? 1 : -1),
+                    Convert.ToInt32(Math.Tan((45 + k) * toRadian)), typeof(Queen), typeof(Bishop), true))
                 {
                     return true;
                 }
 
-                //Knight [(2,-1),(-2,1),(-2,1),(2,-1)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)) * 2,
-                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)), typeof(Knight), _loop: false))
+                //Knight [(2,1),(2,-1),(-2,1),(-2,1)]
+                if (IsThisPiece(king_x, king_y, (k < 91.0 ? 2 : -2),
+                    Convert.ToInt32(Math.Tan((45 + k) * toRadian)), typeof(Knight), _loop: false))
                 {
                     return true;
                 }
 
-                //Knight [(1,-2),(-1,2),(-1,2),(1,-2)]
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)),
-                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)) * 2, typeof(Knight), _loop: false))
+                //Knight [(1,2),(1,-2),(-1,2),(-1,-2)]
+                if (IsThisPiece(king_x, king_y, (k < 91.0 ? 1 : -1),
+                    Convert.ToInt32(Math.Tan((45 + k) * toRadian)) * 2, typeof(Knight), _loop: false))
                 {
                     return true;
                 }
@@ -194,15 +240,15 @@ namespace ChessProjectTerm
                 {
                     return true;
                 }
-                //King-Direct
+                //King-Direct [(1,0),(0,1),(-1,0),(0,-1)]
                 if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Sin(k * toRadian)),
                     Convert.ToInt32(Math.Cos(k * toRadian)), typeof(King), _loop: false))
                 {
                     return true;
                 }
-                //King-Diagonal
-                if (IsThisPiece(king_x, king_y, Convert.ToInt32(Math.Tan((k + 45) * toRadian)),
-                    Convert.ToInt32(Math.Tan((360 - 45 - k) * toRadian)), typeof(King), _loop: false))
+                //King-Diagonal [(1,1),(1,-1),(-1,1),(-1,-1)]
+                if (IsThisPiece(king_x, king_y, (k < 91.0 ? 1 : -1),
+                    Convert.ToInt32(Math.Tan((45 + k) * toRadian)), typeof(King), _loop: false))
                 {
                     return true;
                 }
@@ -215,12 +261,9 @@ namespace ChessProjectTerm
         private bool IsThisPiece(int king_x, int king_y, int _i, int _j, Type _type1, Type _type2 = null, bool _loop = false)
         {
 
-            if (color == 'W')
+            if (_type1.Equals(typeof(Pawn)) && color == 'W')
             {
-                if (_type1.Equals(typeof(Pawn)))
-                {
-                    _i = _i * -1;
-                }
+                _i = _i * -1;
             }
             int inc_i = _i;
             int inc_j = _j;

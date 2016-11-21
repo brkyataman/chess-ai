@@ -12,7 +12,6 @@ namespace ChessProjectTerm
         public int x { get; set; }
         public int y { get; set; }
         public char color { get; set; }
-
         public bool initialPos { get;set;}
         public Piece(int _x, int _y, char _color)
         {
@@ -20,6 +19,13 @@ namespace ChessProjectTerm
             this.y = _y;
             this.color = _color;
             this.initialPos = true;
+        }
+
+        public void UpdateData(int _x, int _y)
+        {
+            this.x = _x;
+            this.y = _y;
+            this.initialPos = false;
         }
         abstract public IEnumerable<Move> PlayableMoves(Square[,] board);
 
@@ -533,8 +539,9 @@ namespace ChessProjectTerm
 
         public IEnumerable<Move> Castling(int _j, Square[,] board)
         {
- 
-            if (this.initialPos && board[x, (int)((double)y - 0.5 + 3.5 *_j)].occupiedBy.initialPos)
+
+            if (this.initialPos && board[x, (int)((double)y - 0.5 + 3.5 * _j)].occupiedBy != null && 
+                board[x, (int)((double)y - 0.5 + 3.5 * _j)].occupiedBy.initialPos)
             {
                 if (!board[this.x, this.y + _j].isOccupied) {
                     if (!board[this.x, this.y + _j * 2].isOccupied)

@@ -13,54 +13,63 @@ namespace ChessProjectTerm
             string input;
             //Board chessBoard;
 
-            System.Console.WriteLine("Welcome to Ultimate Chess Hell");
-            input = System.Console.ReadLine();
-            System.Console.WriteLine("You wrote: " + input + "\n");
+            System.Console.WriteLine("Welcome to Ultimate Chess Hell\n***********\n\n");
+            //input = System.Console.ReadLine();
+            //System.Console.WriteLine("You wrote: " + input + "\n");
 
             State state = new State();
             state.InitiliazeBoard();
 
 
-            while (true) {
-                var x = state.getBoard();
-                printBoard(x);
+            while (true)
+            {
 
                 var y = state.GetPlayableMoves();
                 printMoves(y);
 
-                System.Console.WriteLine("From X:");
-                string from_x = System.Console.ReadLine();
+                var x = state.getBoard();
+                printBoard(x);
 
-                System.Console.WriteLine("From Y:");
-                string from_y = System.Console.ReadLine();
-
-                System.Console.WriteLine("To X:");
-                string to_x = System.Console.ReadLine();
-
-                System.Console.WriteLine("To Y:");
-                string to_y = System.Console.ReadLine();
-
-                state.GenerateMove((int)from_x[0]-48, (int)from_y[0]-48, (int)to_x[0]-48, (int)to_y[0]-48);
                 if (!state.IsKingChecked(0, 4))
                 {
                     System.Console.WriteLine("No check!");
                 }
 
+                //System.Console.WriteLine("From X:");
+                //string from_x = System.Console.ReadLine();
+
+                //System.Console.WriteLine("From Y:");
+                //string from_y = System.Console.ReadLine();
+
+                //System.Console.WriteLine("To X:");
+                //string to_x = System.Console.ReadLine();
+
+                //System.Console.WriteLine("To Y:");
+                //string to_y = System.Console.ReadLine();
+
+                //state.GenerateMove((int)from_x[0] - 48, (int)from_y[0] - 48, (int)to_x[0] - 48, (int)to_y[0] - 48);
+
+                System.Console.WriteLine("which move?");
+                int move_choice = Convert.ToInt32(System.Console.ReadLine());
+                state.GenerateMove(y[move_choice]);
             }
             input = System.Console.ReadLine();
         }
 
         public static void printBoard(Square[,] board)
         {
+            string s = ""; 
+            
+
             for (int i = 7; i > -1; i--)
             {
-                string s = "";
+                s = i + "  ";
                 for (int j = 0; j < 8; j++)
                 {
 
                     if (!board[i, j].isOccupied)
                     {
-                        s += "x ";
+                        s += "x  ";
                     }
                     else
                     {
@@ -70,14 +79,23 @@ namespace ChessProjectTerm
 
                 System.Console.WriteLine(s + "\n");
             }
+
+            s = "   ";
+            for (int i = 0; i < 8; i++)
+            {
+                s += i + "  ";
+
+            }
+            System.Console.WriteLine( s + "\n");
         }
 
         public static void printMoves(List<Move> moves)
         {
             string s = "";
+            int k = 0;
             foreach (var move in moves)
             {
-                s += "(" + move.from_x + ","
+                s += k++ + ". (" + move.from_x + ","
                     + move.from_y + ")"
                     + " to (" + move.to_x + ","
                     + move.to_y
