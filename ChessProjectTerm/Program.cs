@@ -8,19 +8,22 @@ namespace ChessProjectTerm
 {
     class Program
     {
+
         static void Main()
         {
             string input;
             //Board chessBoard;
-
-            System.Console.WriteLine("Welcome to Ultimate Chess Hell\n***********\n\n");
+            char color = 'W';
+            char oppColor = 'B';
+            
             //input = System.Console.ReadLine();
             //System.Console.WriteLine("You wrote: " + input + "\n");
 
             State state = new State();
             state.InitiliazeBoard();
 
-
+            state.setColor(color);
+            int z = 0;
             while (true)
             {
 
@@ -30,7 +33,7 @@ namespace ChessProjectTerm
                 var x = state.getBoard();
                 printBoard(x);
 
-                if (!state.IsKingChecked(0, 4))
+                if (!state.IsKingChecked())
                 {
                     System.Console.WriteLine("No check!");
                 }
@@ -49,17 +52,24 @@ namespace ChessProjectTerm
 
                 //state.GenerateMove((int)from_x[0] - 48, (int)from_y[0] - 48, (int)to_x[0] - 48, (int)to_y[0] - 48);
 
-                System.Console.WriteLine("which move?");
-                int move_choice = Convert.ToInt32(System.Console.ReadLine());
+
+                int move_choice = -1;
+                while (!(move_choice < y.Count && move_choice > -1))
+                {
+                    System.Console.WriteLine("which move?");
+                    move_choice = Convert.ToInt32(System.Console.ReadLine());
+                }
                 state.GenerateMove(y[move_choice]);
+
+                state.setColor(++z % 2 == 0 ? color : oppColor);
             }
             input = System.Console.ReadLine();
         }
 
         public static void printBoard(Square[,] board)
         {
-            string s = ""; 
-            
+            string s = "";
+
 
             for (int i = 7; i > -1; i--)
             {
@@ -86,7 +96,7 @@ namespace ChessProjectTerm
                 s += i + "  ";
 
             }
-            System.Console.WriteLine( s + "\n");
+            System.Console.WriteLine(s + "\n");
         }
 
         public static void printMoves(List<Move> moves)
@@ -104,5 +114,8 @@ namespace ChessProjectTerm
             }
             System.Console.WriteLine(s);
         }
+
     }
+
 }
+

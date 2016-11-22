@@ -192,26 +192,22 @@ namespace ChessProjectTerm
             else { this.forwardIndex = 1; }
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
-        {
-            //Base - 1 forward - no loop
-
-            //Base - 2 forward - no loop - initial position
-
-            //Diagonal capture
-
+        {           
+            //TODO:
             //En passant
-
             //Promotion
 
+            //Base - 1 forward - no loop
             foreach (var move in BaseRule(forwardIndex, board))
             {
                 yield return move;
             }
+            //Base - 2 forward - no loop - initial position
             foreach (var move in BaseRule(forwardIndex * 2, board))
             {
                 yield return move;
             }
-
+            //Diagonal capture
             foreach (var move in PawnCapture(forwardIndex, board))
             {
                 yield return move;

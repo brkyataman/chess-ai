@@ -21,9 +21,7 @@ namespace ChessProjectTerm
         private int numberOfPieces_white;
         private int numberOfPieces_black;
         public double toRadian;
-        public double divideSin;
-        //private List<string> playableMoves;
-
+        
         public Square[,] getBoard()
         {
             return this.board;
@@ -36,8 +34,14 @@ namespace ChessProjectTerm
             this.turn = 0;
 
             //TODO: color parametre olarak gelmeli!!! düzelt!!!
-            this.color = 'W';
+            //this.color = 'W';
         }
+
+        public void setColor(char _color)
+        {
+            this.color = _color;
+        }
+
         public void InitiliazeBoard()
         {
             for (int i = 0; i < 8; i++)
@@ -49,8 +53,8 @@ namespace ChessProjectTerm
             }
             for (int j = 0; j < 8; j++)
             {
-                //this.board[1, j].occupiedBy = new Pawn(1, j, 'W');
-                //this.board[1, j].isOccupied = true;
+                this.board[1, j].occupiedBy = new Pawn(1, j, 'W');
+                this.board[1, j].isOccupied = true;
                 this.board[6, j].occupiedBy = new Pawn(6, j, 'B');
                 this.board[6, j].isOccupied = true;
             }
@@ -196,15 +200,21 @@ namespace ChessProjectTerm
             return playableMoves;
         }
 
-        //Evaluates 
+        //Evaluates board
         public int Evaluate()
         {
             return 0;
         }
 
-        public bool IsKingChecked(int king_x, int king_y)
+        public bool IsKingChecked()
         {
-
+            int king_x = king_white_x;
+            int king_y = king_white_y;
+            if (color == 'B')
+            {
+                king_x = king_black_x;
+                king_y = king_white_y;
+            }
             for (double k = 0.0; k < 360; k += 90.0)
             {
                 //Queen or Rook [(1,0),(0,1),(-1,0),(0,-1)]
