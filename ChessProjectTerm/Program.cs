@@ -37,9 +37,14 @@ namespace ChessProjectTerm
 
             Tree t = new Tree(3);
             var xxx = t.BuildTree(state);
-            var yyy = xxx[0];
-            int z = 0;
 
+            var kl = state.GetPlayableMoves();
+            printMoves(kl);
+
+            System.Console.WriteLine("which move?");
+            int z = Convert.ToInt32(System.Console.ReadLine());
+
+            t.ExpandWithNewRoot(z);
             return;
 
             Test test = new Test();
