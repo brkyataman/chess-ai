@@ -12,16 +12,17 @@ namespace ChessProjectTerm
     public class State
     {
         private Square[,] board;
-        private char color;
-        private int turn;
-        private int king_black_x;
-        private int king_black_y;
-        private int king_white_x;
-        private int king_white_y;
-        private int numberOfPieces_white;
-        private int numberOfPieces_black;
-        public double toRadian;
-        
+        public char color { get; set; }
+        public int turn { get; set; }
+        public int king_black_x { get; set; }
+        public int king_black_y { get; set; }
+        public int king_white_x { get; set; }
+        public int king_white_y { get; set; }
+        public int numberOfPieces_white { get; set; }
+        public int numberOfPieces_black { get; set; }
+
+        private double toRadian;
+
         public Square[,] getBoard()
         {
             return this.board;
@@ -31,17 +32,46 @@ namespace ChessProjectTerm
         {
             this.board = new Square[8, 8];
             toRadian = (Math.PI / 180);
-            this.turn = 0;
-
             //TODO: color parametre olarak gelmeli!!! düzelt!!!
             //this.color = 'W';
+            //this.turn = 0; //Done in initiliaze state.
+        }
+
+        public State GetCopy(){
+            State new_state = new State();
+            new_state.board = new Square[8, 8];
+            new_state.turn = this.turn;
+            new_state.color = this.color;
+            new_state.king_black_x = this.king_black_x;
+            new_state.king_black_y = this.king_black_y;
+            new_state.king_white_x = this.king_white_x;
+            new_state.king_white_y = this.king_white_y;
+            new_state.numberOfPieces_black = this.numberOfPieces_black;
+            new_state.numberOfPieces_white = this.numberOfPieces_white;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    new_state.board[i, j] = new Square();
+                    new_state.board[i, j].isOccupied = this.board[i, j].isOccupied;
+                    if (this.board[i, j].occupiedBy != null)
+                    {
+                        new_state.board[i, j].occupiedBy = this.board[i, j].occupiedBy.GetCopy();
+                    }
+                    
+                }
+            }
+            return new_state;
         }
 
         public void setColor(char _color)
         {
             this.color = _color;
         }
-
+        public char getColor()
+        {
+            return this.color;
+        }
         public void InitiliazeBoard()
         {
             for (int i = 0; i < 8; i++)
@@ -109,7 +139,7 @@ namespace ChessProjectTerm
         public bool GenerateMove(Move move)
         {
             board[move.to_x, move.to_y].occupiedBy = board[move.from_x, move.from_y].occupiedBy;
-            board[move.to_x,move.to_y].occupiedBy.UpdateData(move.to_x, move.to_y);
+            board[move.to_x, move.to_y].occupiedBy.UpdateData(move.to_x, move.to_y);
             board[move.to_x, move.to_y].isOccupied = true;
 
             board[move.from_x, move.from_y].occupiedBy = null;
@@ -121,9 +151,9 @@ namespace ChessProjectTerm
                 if (move.to_y > 0) //Right castling
                 {
                     board[move.to_x, move.to_y - 1].occupiedBy = board[move.to_x, move.to_y + 1].occupiedBy;
-                    board[move.to_x, move.to_y - 1].occupiedBy.UpdateData(move.to_x, move.to_y -1);
+                    board[move.to_x, move.to_y - 1].occupiedBy.UpdateData(move.to_x, move.to_y - 1);
                     board[move.to_x, move.to_y - 1].isOccupied = true;
-                    
+
                     board[move.to_x, move.to_y + 1].occupiedBy = null;
                     board[move.to_x, move.to_y + 1].isOccupied = false;
                 }

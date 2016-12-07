@@ -15,15 +15,34 @@ namespace ChessProjectTerm
             //Board chessBoard;
             char color = 'W';
             char oppColor = 'B';
-            
+
+
+            System.Console.WriteLine("Welcome.\nChoose a color(w/b): ");
+            input = System.Console.ReadLine();
+
+            if (input[0] == 'W' || input[0] == 'w')
+            {
+                color = 'B';
+                oppColor = 'W';
+            }
+
+
             //input = System.Console.ReadLine();
             //System.Console.WriteLine("You wrote: " + input + "\n");
 
             State state = new State();
             state.InitiliazeBoard();
-
             state.setColor(color);
+
+
+            Tree t = new Tree(3);
+            var xxx = t.BuildTree(state);
+            var yyy = xxx[0];
             int z = 0;
+
+            return;
+
+            Test test = new Test();
             while (true)
             {
 
@@ -31,7 +50,7 @@ namespace ChessProjectTerm
                 printMoves(y);
 
                 var x = state.getBoard();
-                printBoard(x);
+                test.printBoard(x);
 
                 if (!state.IsKingChecked())
                 {
@@ -58,46 +77,21 @@ namespace ChessProjectTerm
                 {
                     System.Console.WriteLine("which move?");
                     move_choice = Convert.ToInt32(System.Console.ReadLine());
+                    if (move_choice == -1)
+                        goto exit;
                 }
                 state.GenerateMove(y[move_choice]);
 
                 state.setColor(++z % 2 == 0 ? color : oppColor);
             }
             input = System.Console.ReadLine();
+
+        exit:
+            System.Console.WriteLine("Exiting! Bye..");
+            return;
         }
 
-        public static void printBoard(Square[,] board)
-        {
-            string s = "";
-
-
-            for (int i = 7; i > -1; i--)
-            {
-                s = i + "  ";
-                for (int j = 0; j < 8; j++)
-                {
-
-                    if (!board[i, j].isOccupied)
-                    {
-                        s += "x  ";
-                    }
-                    else
-                    {
-                        s += board[i, j].occupiedBy.color.ToString() + board[i, j].occupiedBy.GetType().ToString().Substring(17, 1) + " ";
-                    }
-                }
-
-                System.Console.WriteLine(s + "\n");
-            }
-
-            s = "   ";
-            for (int i = 0; i < 8; i++)
-            {
-                s += i + "  ";
-
-            }
-            System.Console.WriteLine(s + "\n");
-        }
+        
 
         public static void printMoves(List<Move> moves)
         {
