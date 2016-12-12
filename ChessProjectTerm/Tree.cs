@@ -13,12 +13,78 @@ namespace ChessProjectTerm
         private int root_id;
         private int id_generator;
         private int ply;
+        private int bestMove_id;
         public Tree(int _ply)
         {
             tree = new Dictionary<int, Node>();
             this.id_generator = 1;
             this.ply = _ply;
         }
+
+        public int MinimaxAlphaBeta(int _id, int _alpha, int _beta, int _current_ply)
+        {
+            //check if ply limit
+            if (_current_ply == this.ply)
+            {
+                return tree[_id].state.Evaluate();
+            }
+
+            var children = tree[_id].child_ids;
+
+            if (children.Count == 0)
+            {
+                return tree[_id].state.Evaluate();
+            }
+
+            //initiliazing best move
+            if (_id == root_id)
+            {
+                bestMove_id = children[0];
+                if (children.Count == 1)
+                    return -1;
+            }
+
+            //MAX's play
+            if (_current_ply % 2 == 0) 
+            {
+
+                for (int i = 0; i < children.Count; i++)
+                {
+                    int result = MinimaxAlphaBeta(children[i], _alpha, _beta, _current_ply + 1);
+                    if (result > _alpha)
+                    {
+                        _alpha = result;
+                        if (_id == root_id)
+                        {
+                            bestMove_id = children[i];
+                        }
+                    }
+                    if (_alpha >= _beta)
+                        return _alpha;
+                }
+                return _alpha;
+            }
+            //MIN's play
+            else 
+            {
+                for (int i = 0; i < children.Count; i++)
+                {
+                    int result = MinimaxAlphaBeta(children[i], _alpha, _beta, _current_ply + 1);
+                    if (result < _beta)
+                    {
+                        if (_id == root_id)
+                        {
+                            bestMove_id = children[i];
+                        }
+                    }
+                    if (_beta <= _alpha)
+                        return _beta;
+                }
+                return _beta;
+            }
+        }
+
+
         public Dictionary<int, Node> BuildTree(State _source)
         {
             //Initiliaze root node.
@@ -89,7 +155,7 @@ namespace ChessProjectTerm
                 if (tree[root.child_ids[i]].move_id != _move_id)
                 {
                     unused_nodes.Add(root.child_ids[i]);
-                    temp = FindChildren(root.child_ids[i], 1);
+                    temp = FindDescendants(root.child_ids[i], 1);
                     if (temp != null)
                         unused_nodes.AddRange(temp);
                     temp = null;
@@ -99,7 +165,7 @@ namespace ChessProjectTerm
         }
 
         //Finds every child of a node.
-        private List<int> FindChildren(int _id, int current_ply)
+        private List<int> FindDescendants(int _id, int current_ply)
         {
             //TODO: Kaldırılabilir. Belki plyin son elemanlarınında çocuğu olabilir.(ama nasıl?)
             if (current_ply == this.ply)
@@ -118,7 +184,7 @@ namespace ChessProjectTerm
             for (int i = 0; i < number_of_children; i++)
             {
                 c_id = tree[_id].child_ids[i];
-                temp_list = FindChildren(c_id, current_ply + 1);
+                temp_list = FindDescendants(c_id, current_ply + 1);
                 if (temp_list != null)
                     children_list.AddRange(temp_list);
                 
@@ -173,26 +239,5 @@ namespace ChessProjectTerm
         }
     }
 
-    public class Node
-    {
-        public int id { get; set; }
-        public int parent_id { get; set; }
-        public int move_id { get; set; }
-        public List<int> child_ids { get; set; }
-        public State state { get; set; }
-
-        public Node(State _state, int _id, int _parent_id, int _move_id)
-        {
-            this.state = _state;
-            this.id = _id;
-            this.parent_id = _parent_id;
-            this.move_id = _move_id;
-            this.child_ids = new List<int>();
-        }
-
-        public void AddChild(int _child_id)
-        {
-            this.child_ids.Add(_child_id);
-        }
-    }
+    
 }
