@@ -8,36 +8,47 @@ namespace ChessProjectTerm
 {
     public class Tree
     {
-        private Dictionary<int, Node> tree;
-        private Node root;
-        private int root_id;
-        private int id_generator;
+        private Dictionary<long, Node> tree;
+        public Node root;
+        //private int root_id;
+        private long id_generator;
         private int ply;
-        private int bestMove_id;
+        private long bestMove_id;
         public Tree(int _ply)
         {
-            tree = new Dictionary<int, Node>();
+            tree = new Dictionary<long, Node>();
             this.id_generator = 1;
             this.ply = _ply;
         }
+        public int GetBestMove()
+        {
+            MinimaxAlphaBeta(root.id, -2147400000, 2147400000, 0);
 
-        public int MinimaxAlphaBeta(int _id, int _alpha, int _beta, int _current_ply)
+            return tree[bestMove_id].move_id;
+        }
+        public int MinimaxAlphaBeta(long _id, int _alpha, int _beta, int _current_ply)
         {
             //check if ply limit
             if (_current_ply == this.ply)
-            {
-                return tree[_id].state.Evaluate();
+            {             
+                return tree[_id].state.Evaluate(root.state.color);
             }
 
             var children = tree[_id].child_ids;
 
+            //Win or Lose for root
             if (children.Count == 0)
             {
-                return tree[_id].state.Evaluate();
+                //TODOOOOO: BÖYLE Mİ OLMALI ACABA yoksa win lose başka şekilde mi anlamalı?????????????????
+                if (_current_ply % 2 == 0)//Lose
+                    return -2147400000;
+                else if(_current_ply % 2 == 1) //Win
+                    return 2147400000;
+                return tree[_id].state.Evaluate(root.state.color);
             }
 
             //initiliazing best move
-            if (_id == root_id)
+            if (_id == root.id)
             {
                 bestMove_id = children[0];
                 if (children.Count == 1)
@@ -54,7 +65,7 @@ namespace ChessProjectTerm
                     if (result > _alpha)
                     {
                         _alpha = result;
-                        if (_id == root_id)
+                        if (_id == root.id)
                         {
                             bestMove_id = children[i];
                         }
@@ -72,7 +83,8 @@ namespace ChessProjectTerm
                     int result = MinimaxAlphaBeta(children[i], _alpha, _beta, _current_ply + 1);
                     if (result < _beta)
                     {
-                        if (_id == root_id)
+                        _beta = result;
+                        if (_id == root.id)
                         {
                             bestMove_id = children[i];
                         }
@@ -85,15 +97,15 @@ namespace ChessProjectTerm
         }
 
 
-        public Dictionary<int, Node> BuildTree(State _source)
+        public Dictionary<long, Node> BuildTree(State _source)
         {
             //Initiliaze root node.
             int p_id = 0;
             int move_id = 0;
             tree.Add(id_generator, new Node(_source, this.id_generator, p_id, move_id));
             root = tree[id_generator];
-            List<int> children_q = new List<int>();
-            List<int> parent_q = new List<int>();
+            List<long> children_q = new List<long>();
+            List<long> parent_q = new List<long>();
             children_q.Add(this.id_generator++);
 
             for (int k = 0; k < ply; k++)
@@ -105,21 +117,21 @@ namespace ChessProjectTerm
             }
             //Ardışık gelmedi sonuçlar. Statelerde colorları check et.
 
-            Test t = new Test();
-            t.printBoard(tree[2].state.getBoard());
-            if (tree[22].parent_id == 2)
-            {
-                t.printBoard(tree[22].state.getBoard());
-            }
+            //Test t = new Test();
+            //t.printBoard(tree[2].state.getBoard());
+            //if (tree[22].parent_id == 2)
+            //{
+            //    t.printBoard(tree[22].state.getBoard());
+            //}
 
             return tree;
         }
 
         //Expands tree one ply.
-        private List<int> ExpandTree(List<int> parent_q)
+        private List<long> ExpandTree(List<long> parent_q)
         {
-            int p_id;
-            List<int> children_q = new List<int>();
+            long p_id;
+            List<long> children_q = new List<long>();
             while (parent_q.Count > 0)
             {
                 p_id = parent_q[0];
@@ -133,7 +145,7 @@ namespace ChessProjectTerm
                 {
                     State new_state = p.state.GetCopy();
                     new_state.GenerateMove(playableMoves[i]);
-                    new_state.color = new_state.color == 'W' ? 'B' : 'W';
+                    new_state.color = new_state.color == 'w' ? 'b' : 'w';
                     new_state.turn++;
                     Node c = new Node(new_state, this.id_generator, p_id, i);
                     tree[p_id].AddChild(this.id_generator);
@@ -144,10 +156,10 @@ namespace ChessProjectTerm
             return children_q;
         }
 
-        private List<int> FindUnusedNodes(int _move_id)
+        private List<long> FindUnusedNodes(int _move_id)
         {
-            List<int> unused_nodes = new List<int>();
-            List<int> temp = null;
+            List<long> unused_nodes = new List<long>();
+            List<long> temp = null;
             unused_nodes.Add(root.id);
 
             for (int i = 0; i < root.child_ids.Count; i++)
@@ -165,21 +177,21 @@ namespace ChessProjectTerm
         }
 
         //Finds every child of a node.
-        private List<int> FindDescendants(int _id, int current_ply)
+        private List<long> FindDescendants(long _id, int current_ply)
         {
             //TODO: Kaldırılabilir. Belki plyin son elemanlarınında çocuğu olabilir.(ama nasıl?)
             if (current_ply == this.ply)
                 return null;
 
-            List<int> children_list = null;
+            List<long> children_list = null;
             int number_of_children = 0;
             if (tree[_id].child_ids.Count > 0) { 
-                children_list = new List<int>(tree[_id].child_ids);
+                children_list = new List<long>(tree[_id].child_ids);
                 number_of_children = children_list.Count;
             }
 
-            List<int> temp_list = null;            
-            int c_id;
+            List<long> temp_list = null;            
+            long c_id;
 
             for (int i = 0; i < number_of_children; i++)
             {
@@ -191,10 +203,10 @@ namespace ChessProjectTerm
             }
             return children_list;
         }
-        public Dictionary<int, Node> ExpandWithNewRoot(int _move_id)
+        public Dictionary<long, Node> ExpandWithNewRoot(int _move_id)
         {
             //Get unused nodes
-            List<int> unused_nodes = FindUnusedNodes(_move_id);
+            List<long> unused_nodes = FindUnusedNodes(_move_id);
 
             //Change root to new node..
             for (int i = 0; i < this.root.child_ids.Count; i++)
@@ -214,10 +226,10 @@ namespace ChessProjectTerm
 
 
             //Get leaf child ids for expanding
-            List<int> children_list = new List<int>();
-            List<int> parent_list = new List<int>();
+            List<long> children_list = new List<long>();
+            List<long> parent_list = new List<long>();
             children_list.Add(root.id);
-            int p_id;
+            long p_id;
             for (int i = 0; i < ply - 1; i++)
             {
                 parent_list.AddRange(children_list);

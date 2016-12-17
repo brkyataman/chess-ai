@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.IO;
 namespace ChessProjectTerm
 {
     class Program
     {
-
+       
         static void Main()
-        {
+        {          
             string input;
             //Board chessBoard;
-            char color = 'W';
-            char oppColor = 'B';
+            char userColor = 'b';
+            //char oppColor = 'b';
 
 
             System.Console.WriteLine("Welcome.\nChoose a color(w/b): ");
@@ -22,8 +22,8 @@ namespace ChessProjectTerm
 
             if (input[0] == 'W' || input[0] == 'w')
             {
-                color = 'B';
-                oppColor = 'W';
+                userColor = 'w';
+                //oppColor = 'w';
             }
 
 
@@ -32,21 +32,41 @@ namespace ChessProjectTerm
 
             State state = new State();
             state.InitiliazeBoard();
-            state.setColor(color);
+            state.color = userColor;
 
 
             Tree t = new Tree(3);
             var xxx = t.BuildTree(state);
 
-            var kl = state.GetPlayableMoves();
-            printMoves(kl);
 
-            System.Console.WriteLine("which move?");
-            int z = Convert.ToInt32(System.Console.ReadLine());
 
-            t.ExpandWithNewRoot(z);
+
+            Test test2 = new Test();
+            
+
+            while (true)
+            {
+                System.Console.WriteLine("AI's move\n***************\n");
+                test2.printBoard(t.root.state.getBoard());
+
+                var kl = t.root.state.GetPlayableMoves();
+                printMoves(kl);
+                
+                System.Console.WriteLine("which move?");
+
+                int z = Convert.ToInt32(System.Console.ReadLine());
+
+
+                t.ExpandWithNewRoot(z);
+                System.Console.WriteLine("User's move\n***************\n");
+                test2.printBoard(t.root.state.getBoard());
+
+                int best = t.GetBestMove();
+
+                t.ExpandWithNewRoot(best);
+                
+            }
             return;
-
             Test test = new Test();
             while (true)
             {
@@ -87,7 +107,7 @@ namespace ChessProjectTerm
                 }
                 state.GenerateMove(y[move_choice]);
 
-                state.setColor(++z % 2 == 0 ? color : oppColor);
+                //state.color = ++z % 2 == 0 ? color : oppColor;
             }
             input = System.Console.ReadLine();
 

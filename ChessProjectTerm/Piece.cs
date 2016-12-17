@@ -13,7 +13,7 @@ namespace ChessProjectTerm
         public int y { get; set; }
         public char color { get; set; }
         public bool initialPos { get;set;}
-        public Piece(int _x, int _y, char _color, bool _initialPos = true)
+        public Piece(int _x, int _y, char _color, bool _initialPos)
         {
             this.x = _x;
             this.y = _y;
@@ -42,8 +42,8 @@ namespace ChessProjectTerm
                         //Occupied by enemy piece
                         if (board[x + _i, y + _j].occupiedBy.color != this.color)
                         {
-                            //TODO: Capture Enemy
-                            yield return new Move(x, y, x + _i, y + _j, 'C');
+                            if(!board[x+ _i , y + _j].occupiedBy.GetType().Equals(typeof(King)))
+                                yield return new Move(x, y, x + _i, y + _j, 'C');
                         }
                         //Occupied by ally piece so do nothing
                         break;
@@ -88,10 +88,10 @@ namespace ChessProjectTerm
 
         int forwardIndex;
 
-        public Pawn(int _x, int _y, char _color, bool _initialPos = true)
-            : base(_x, _y, _color, _initialPos = true)
+        public Pawn(int _x, int _y, char _color, bool _initialPos)
+            : base(_x, _y, _color, _initialPos)
         {
-            if (this.color == 'B') { this.forwardIndex = -1; }
+            if (this.color == 'b') { this.forwardIndex = -1; }
             else { this.forwardIndex = 1; }
         }
         public override IEnumerable<Move> PlayableMoves(Square[,] board)
@@ -204,8 +204,8 @@ namespace ChessProjectTerm
     public class Knight : Piece
     {
 
-        public Knight(int _x, int _y, char _color, bool _initialPos = true)
-            : base(_x, _y, _color, _initialPos = true)
+        public Knight(int _x, int _y, char _color, bool _initialPos )
+            : base(_x, _y, _color, _initialPos)
         {
 
         }
@@ -255,8 +255,8 @@ namespace ChessProjectTerm
     public class Bishop : Piece
     {
 
-        public Bishop(int _x, int _y, char _color, bool _initialPos = true)
-            : base(_x, _y, _color, _initialPos = true)
+        public Bishop(int _x, int _y, char _color, bool _initialPos)
+            : base(_x, _y, _color, _initialPos)
         {
 
         }
@@ -294,8 +294,8 @@ namespace ChessProjectTerm
 
     public class Rook : Piece
     {
-        public Rook(int _x, int _y, char _color, bool _initialPos = true)
-            : base(_x, _y, _color, _initialPos = true)
+        public Rook(int _x, int _y, char _color, bool _initialPos)
+            : base(_x, _y, _color, _initialPos)
         {
 
         }
@@ -331,8 +331,8 @@ namespace ChessProjectTerm
 
     public class Queen : Piece
     {
-        public Queen(int _x, int _y, char _color, bool _initialPos = true)
-            : base(_x, _y, _color, _initialPos = true)
+        public Queen(int _x, int _y, char _color, bool _initialPos)
+            : base(_x, _y, _color, _initialPos)
         {
 
         }
@@ -389,8 +389,8 @@ namespace ChessProjectTerm
     {
         private bool noRightCastling;
         private bool noLeftCastling;
-        public King(int _x, int _y, char _color, bool _initialPos = true)
-            : base(_x, _y, _color, _initialPos = true)
+        public King(int _x, int _y, char _color, bool _initialPos)
+            : base(_x, _y, _color, _initialPos)
         {
             noLeftCastling = false;
             noRightCastling = false;

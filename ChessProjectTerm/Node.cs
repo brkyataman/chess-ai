@@ -8,22 +8,22 @@ namespace ChessProjectTerm
 {
     public class Node
     {
-        public int id { get; set; }
-        public int parent_id { get; set; }
+        public long id { get; set; }
+        public long parent_id { get; set; }
         public int move_id { get; set; }
-        public List<int> child_ids { get; set; }
+        public List<long> child_ids { get; set; }
         public State state { get; set; }
 
-        public Node(State _state, int _id, int _parent_id, int _move_id)
+        public Node(State _state, long _id, long _parent_id, int _move_id)
         {
             this.state = _state;
             this.id = _id;
             this.parent_id = _parent_id;
             this.move_id = _move_id;
-            this.child_ids = new List<int>();
+            this.child_ids = new List<long>();
         }
 
-        public void AddChild(int _child_id)
+        public void AddChild(long _child_id)
         {
             this.child_ids.Add(_child_id);
         }

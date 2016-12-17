@@ -12,7 +12,6 @@ namespace ChessProjectTerm
         {
             string s = "";
 
-
             for (int i = 7; i > -1; i--)
             {
                 s = i + "  ";
